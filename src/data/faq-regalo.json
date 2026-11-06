@@ -1,0 +1,26 @@
+[
+  {
+    "pregunta": "¿Cómo recibo el voucher?",
+    "respuesta": "Una vez confirmado el pago, lo armamos con el nombre de quien lo recibe y tu mensaje, y te lo mandamos por WhatsApp como imagen, listo para reenviar o imprimir."
+  },
+  {
+    "pregunta": "¿Cómo se paga?",
+    "respuesta": "Por Mercado Pago o transferencia al alias CATASNOTRADICIONALES (Personal Pay). Cuando nos escribís te confirmamos los datos."
+  },
+  {
+    "pregunta": "¿Cuánto tiempo tiene para usarlo?",
+    "respuesta": "El voucher tiene 40 días de vigencia desde que lo recibís."
+  },
+  {
+    "pregunta": "¿Puede elegir la fecha y la cata?",
+    "respuesta": "Si el voucher es para una cata puntual, se elige la fecha en la que se realiza esa cata. Si no, se puede cambiar por cualquier otra del mismo valor o superior, abonando la diferencia. En cualquier caso, escribinos y lo conversamos."
+  },
+  {
+    "pregunta": "¿Puedo regalar para más de una persona?",
+    "respuesta": "Sí, claro. Decinos a cuántas personas querés obsequiarles la cata y armamos el voucher para ellos."
+  },
+  {
+    "pregunta": "Es una sorpresa, ¿qué pasa con las restricciones alimentarias?",
+    "respuesta": "Avisanos al pedir el voucher si la persona tiene alergias o restricciones y vemos qué cata conviene. Si no podemos garantizar una alternativa segura, te lo decimos antes de avanzar con la reserva."
+  }
+]

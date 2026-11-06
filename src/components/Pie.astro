@@ -1,0 +1,33 @@
+---
+import Icono from './Icono.astro';
+import site from '../data/site.json';
+import { whatsappUrl } from '../lib/events';
+const anio = new Date().getFullYear();
+---
+<footer class="relative bg-espresso-950 pt-14 pb-10 text-crema-300">
+  <div class="contenedor grid gap-10 md:grid-cols-[2fr_1fr_1fr]">
+    <div>
+      <p class="font-display text-3xl text-crema-50">Catas <em class="text-caramelo-300">no</em> tradicionales</p>
+      <p class="mt-2 max-w-sm">Catas a ciegas de clásicos argentinos en Buenos Aires. Probá sin ver, votá sin prejuicios.</p>
+    </div>
+    <div>
+      <p class="rotulo mb-3">Hablemos</p>
+      <ul class="grid gap-2">
+        <li><a class="inline-flex min-h-11 items-center gap-2 hover:text-caramelo-200" href={whatsappUrl(site.mensajeWhatsappGeneral)} target="_blank" rel="noopener" data-accion="whatsapp-footer"><Icono nombre="whatsapp" /> WhatsApp</a></li>
+        <li><a class="inline-flex min-h-11 items-center gap-2 hover:text-caramelo-200" href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener"><Icono nombre="instagram" /> @{site.instagram}</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="rotulo mb-3">Más</p>
+      <ul class="grid gap-2">
+        <li><a class="inline-flex min-h-11 items-center hover:text-caramelo-200" href="/regala">Regalá una cata</a></li>
+        <li><a class="inline-flex min-h-11 items-center hover:text-caramelo-200" href="/empresas">Para empresas</a></li>
+        <li><a class="inline-flex min-h-11 items-center hover:text-caramelo-200" href="/terminos">Términos de reserva</a></li>
+        <li><a class="inline-flex min-h-11 items-center hover:text-caramelo-200" href="/privacidad">Privacidad</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenedor mt-10 border-t border-crema-50/10 pt-6 text-sm text-crema-500">
+    © {anio} {site.nombre} · Buenos Aires, Argentina.
+  </div>
+</footer>

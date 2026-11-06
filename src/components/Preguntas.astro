@@ -1,0 +1,40 @@
+---
+// Acordeón accesible sin JavaScript (<details>). Las preguntas viven en src/data/faq.json.
+import site from '../data/site.json';
+import { whatsappUrl } from '../lib/events';
+
+interface Props {
+  items: { pregunta: string; respuesta: string }[];
+  id?: string;
+  titulo?: string;
+  rotulo?: string;
+}
+const { items, id = 'preguntas', titulo = 'Preguntas <em>frecuentes</em>', rotulo = 'Antes de reservar' } = Astro.props;
+---
+<section id={id} class="contenedor py-24 sm:py-32">
+  <div class="grid gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
+    <div class="lg:sticky lg:top-28 lg:self-start" data-reveal>
+      <p class="rotulo">{rotulo}</p>
+      <h2 class="titulo-seccion mt-5" set:html={titulo} />
+      <p class="mt-6 max-w-sm text-crema-300">¿No está tu pregunta?</p>
+      <a href={whatsappUrl(site.mensajeWhatsappGeneral)} target="_blank" rel="noopener" data-accion="whatsapp-faq" class="btn btn-whatsapp mt-4">
+        Preguntanos por WhatsApp
+      </a>
+    </div>
+
+    <div class="border-t border-crema-50/10" data-reveal>
+      {items.map((it) => (
+        <details class="faq group border-b border-crema-50/10">
+          <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-display text-2xl text-crema-50 transition-colors hover:text-caramelo-200 sm:text-[1.75rem] [&::-webkit-details-marker]:hidden">
+            {it.pregunta}
+            <span class="relative size-5 shrink-0 text-caramelo-300" aria-hidden="true">
+              <span class="absolute top-1/2 left-0 h-px w-5 bg-current"></span>
+              <span class="absolute top-0 left-1/2 h-5 w-px bg-current transition-transform duration-300 group-open:scale-y-0"></span>
+            </span>
+          </summary>
+          <p class="max-w-xl pb-6 text-crema-300">{it.respuesta}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+---
+import Icono from './Icono.astro';
+import site from '../data/site.json';
+import { whatsappUrl } from '../lib/events';
+---
+<header class="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5">
+  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 rounded-full border border-crema-50/10 bg-espresso-950/55 pr-1.5 pl-5 shadow-[0_10px_40px_-15px_rgb(0_0_0/0.8)] backdrop-blur-xl">
+    <a href="/" class="font-display text-[1.2rem] leading-none tracking-tight sm:text-[1.35rem]">
+      Catas <em class="text-caramelo-300">no</em> tradicionales
+    </a>
+    <nav aria-label="Principal" class="flex items-center gap-1">
+      <a href="/#como-funciona" class="hidden rounded-full px-3.5 py-2 text-sm text-crema-300 transition-colors hover:text-crema-50 md:inline-flex">Cómo funciona</a>
+      <a href="/#fechas" class="hidden rounded-full px-3.5 py-2 text-sm text-crema-300 transition-colors hover:text-crema-50 md:inline-flex">Fechas</a>
+      <a href="/#preguntas" class="hidden rounded-full px-3.5 py-2 text-sm text-crema-300 transition-colors hover:text-crema-50 lg:inline-flex">Preguntas</a>
+      <a href="/regala" class="hidden rounded-full px-3.5 py-2 text-sm text-crema-300 transition-colors hover:text-crema-50 lg:inline-flex">Regalá</a>
+      <a href="/empresas" class="hidden rounded-full px-3.5 py-2 text-sm text-crema-300 transition-colors hover:text-crema-50 md:inline-flex">Empresas</a>
+      <a href={whatsappUrl(site.mensajeWhatsappGeneral)} target="_blank" rel="noopener" data-accion="whatsapp-header"
+        class="grid size-11 place-items-center rounded-full text-crema-300 transition-colors hover:text-[#9ff0bf]" aria-label="Escribinos por WhatsApp">
+        <Icono nombre="whatsapp" class="size-5" />
+      </a>
+      <a href="/#fechas" class="btn btn-primario min-h-11 px-5 py-2 text-sm">Reservar</a>
+    </nav>
+  </div>
+</header>

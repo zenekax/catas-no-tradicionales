@@ -1,0 +1,38 @@
+[
+  {
+    "pregunta": "¿Cuánto sale?",
+    "respuesta": "Depende de la cata: el valor está en cada fecha de la agenda. Si dice “Consultá el valor”, escribinos por WhatsApp y te lo pasamos al toque."
+  },
+  {
+    "pregunta": "¿Cuánto dura?",
+    "respuesta": "Alrededor de dos horas, entre que llegás, probás, elegís y se revela el misterio."
+  },
+  {
+    "pregunta": "¿Cuánta comida se come?",
+    "respuesta": "Probás varias muestras del producto de la cata, en porciones chicas para poder comparar. Consejo: no vengas recién almorzado. TODO: confirmar cantidad de muestras."
+  },
+  {
+    "pregunta": "Tengo alergias o una dieta especial, ¿puedo ir?",
+    "respuesta": "Avisanos cuando reserves y te decimos si podemos adaptarlo para esa fecha. Si no podemos garantizar una alternativa segura, te lo decimos antes de avanzar con la reserva."
+  },
+  {
+    "pregunta": "¿Cómo se paga?",
+    "respuesta": "Por Mercado Pago o transferencia bancaria al alias CATASNOTRADICIONALES (Personal Pay). Tu lugar queda confirmado cuando se acredita el pago."
+  },
+  {
+    "pregunta": "¿Y si no puedo ir?",
+    "respuesta": "Avisanos con la mayor anticipación posible para ver otras fechas y reprogramarla. Si el aviso es con menos de 24 hs., se pierde la reserva. Si no te presentás, se pierde el 100% de lo abonado."
+  },
+  {
+    "pregunta": "¿Puedo ir solo o sola?",
+    "respuesta": "Sí. Los grupos son chicos y la dinámica hace que enseguida estés charlando con todos. TODO: confirmar."
+  },
+  {
+    "pregunta": "¿Hay edad mínima?",
+    "respuesta": "Los niños son bienvenidos siempre que estén acompañados por un adulto responsable."
+  },
+  {
+    "pregunta": "¿Dónde es?",
+    "respuesta": "En distintos barrios de CABA según la fecha (Almagro, Caballito, Colegiales y más). El barrio está en cada fecha y la dirección exacta te la pasamos al confirmar la reserva."
+  }
+]

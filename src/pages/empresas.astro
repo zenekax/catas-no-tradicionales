@@ -1,0 +1,278 @@
+---
+import Base from '../layouts/Base.astro';
+import Icono from '../components/Icono.astro';
+import Foto from '../components/Foto.astro';
+import Preguntas from '../components/Preguntas.astro';
+import FondoHero from '../components/islas/FondoHero';
+import site from '../data/site.json';
+import { whatsappUrl } from '../lib/events';
+import { schemaPreguntas } from '../lib/schema';
+
+const mensajeWa = 'Hola! Quiero pedir una propuesta de cata para mi empresa.';
+
+const beneficios = [
+  { t: 'Integración de verdad', d: 'Todos prueban lo mismo, nadie sabe más que nadie. El gerente y el pasante votan en igualdad.' },
+  { t: 'Desconexión total', d: 'Dos horas sin pantallas ni pendientes. Sólo paladar, debate y alguna que otra sorpresa.' },
+  { t: 'Cero organización', d: 'Llevamos todo: productos, dinámica, planillas y conducción. Ustedes sólo aparecen.' },
+  { t: 'Un tema de charla', d: 'El ranking final queda dando vueltas en la oficina por semanas. Garantizado el debate.' },
+];
+
+const formato = [
+  { k: 'Grupo', v: '15 a 20 personas', nota: 'TODO: confirmar mínimo y máximo' },
+  { k: 'Dinámica', v: 'Por equipos, a ciegas' },
+  { k: 'Cierre', v: 'Ranking final y revelación' },
+  { k: 'Lugar', v: 'En tu oficina o en nuestra sede' },
+];
+
+const pasos = [
+  { t: 'Nos contás', d: 'Completás el formulario o nos escribís: cuántos son, cuándo y dónde.' },
+  { t: 'Te armamos la propuesta', d: 'Te enviamos opciones de producto, formato y valor para tu equipo.' },
+  { t: 'Llega el día', d: 'Vamos con todo listo. Ustedes prueban, votan y se ríen.' },
+];
+
+const faqEmpresas = [
+  { pregunta: '¿Cuánto sale?', respuesta: 'Depende de la cantidad de personas, el producto y el lugar. Pedí tu propuesta y te pasamos el valor sin compromiso.' },
+  { pregunta: '¿Emiten factura?', respuesta: 'TODO: confirmar tipo de factura.' },
+  { pregunta: '¿Con cuánta anticipación hay que reservar?', respuesta: 'TODO: confirmar anticipación mínima. Cuanto antes nos escribas, más fechas vas a tener.' },
+  { pregunta: '¿Qué necesitamos tener en la oficina?', respuesta: 'Una mesa o espacio donde el grupo pueda sentarse junto. Del resto nos ocupamos nosotros. TODO: confirmar requisitos.' },
+];
+---
+<Base
+  titulo="Team building gastronómico en CABA · Catas No Tradicionales"
+  schema={[schemaPreguntas(faqEmpresas)]}
+  descripcion="Experiencia sensorial para equipos: catas a ciegas in-company o en sede para 15 a 20 personas. Actividad de team building en Buenos Aires. Pedí tu propuesta."
+>
+  <!-- ============ HERO ============ -->
+  <section class="grano relative isolate flex min-h-[88svh] flex-col overflow-hidden">
+    <div class="absolute inset-0 -z-10" style="background: radial-gradient(120% 70% at 70% 0%, #8a5a3355, transparent 60%), #17100b">
+      <div class="fondo-calido" aria-hidden="true"></div>
+      <FondoHero client:media="(min-width: 1024px)" />
+    </div>
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-b from-transparent to-espresso-900" aria-hidden="true"></div>
+
+    <div class="contenedor flex flex-1 flex-col justify-end pt-28 pb-12 sm:justify-center">
+      <p class="rotulo">Team building gastronómico</p>
+      <h1 class="desenfoque mt-6 text-[3.4rem] leading-[0.92] sm:text-8xl lg:text-[8rem]">
+        <span style="--i:0">Experiencia sensorial</span>{' '}
+        <em style="--i:1">para equipos.</em>
+      </h1>
+      <p class="aparecer mt-7 max-w-lg text-lg text-crema-300 sm:text-xl" style="--delay:250ms">
+        Transformá tu próxima reunión de equipo en una experiencia que no se olvida.
+      </p>
+      <div class="aparecer mt-9 flex flex-col gap-3 sm:flex-row" style="--delay:350ms">
+        <a href="#propuesta" class="btn btn-primario group">Pedí tu propuesta <Icono nombre="flecha" class="size-4 transition-transform duration-300 group-hover:translate-x-1" /></a>
+        <a href={whatsappUrl(mensajeWa)} target="_blank" rel="noopener" data-accion="whatsapp-empresas-hero" class="btn btn-fantasma">
+          <Icono nombre="whatsapp" class="size-[1.1rem]" /> Hablemos por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BENEFICIOS ============ -->
+  <section class="contenedor py-24 sm:py-32">
+    <div data-reveal>
+      <p class="rotulo">Por qué funciona</p>
+      <h2 class="titulo-seccion mt-5 max-w-3xl">Nada une más que <em>discutir por un alfajor.</em></h2>
+    </div>
+    <div class="mt-12 grid gap-5 sm:grid-cols-2">
+      {beneficios.map((b, i) => (
+        <article class="superficie spotlight p-7 sm:p-9" data-reveal style={`--delay:${i * 80}ms`}>
+          <span class="font-display text-4xl italic text-caramelo-400/80">0{i + 1}</span>
+          <h3 class="mt-4 text-4xl">{b.t}</h3>
+          <p class="mt-3 max-w-md text-crema-300">{b.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ FORMATO ============ -->
+  <section class="contenedor py-12 sm:py-20">
+    <div class="superficie grid overflow-hidden lg:grid-cols-2" data-reveal>
+      <Foto src="mesa-planillas-antifaces.jpg" alt="Mesa preparada con antifaces y planillas de puntaje" ratio="3/2" class="rounded-none! lg:h-full lg:aspect-auto!" />
+      <div class="p-7 sm:p-12">
+        <p class="rotulo">El formato</p>
+        <h2 class="mt-5 text-5xl sm:text-6xl">Pensado para <em>grupos.</em></h2>
+        <dl class="mt-8 divide-y divide-crema-50/10 border-y border-crema-50/10">
+          {formato.map((f) => (
+            <div class="flex items-baseline justify-between gap-6 py-4">
+              <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-crema-500">{f.k}</dt>
+              <dd class="text-right text-crema-50">
+                {f.v}
+                {f.nota && <span class="block text-xs text-crema-500">{f.nota}</span>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CÓMO SE CONTRATA ============ -->
+  <section class="contenedor py-24 sm:py-32">
+    <div data-reveal>
+      <p class="rotulo">Cómo se contrata</p>
+      <h2 class="titulo-seccion mt-5">Tres pasos <em>y listo.</em></h2>
+    </div>
+    <ol class="mt-12 grid gap-5 md:grid-cols-3">
+      {pasos.map((p, i) => (
+        <li class="border-t border-caramelo-400/40 pt-6" data-reveal style={`--delay:${i * 90}ms`}>
+          <span class="font-display text-6xl italic leading-none text-caramelo-300">0{i + 1}</span>
+          <h3 class="mt-5 text-3xl">{p.t}</h3>
+          <p class="mt-3 text-crema-300">{p.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- ============ FORMULARIO ============ -->
+  <section id="propuesta" class="contenedor py-12 sm:py-20">
+    <div class="superficie grano relative grid gap-10 overflow-hidden p-6 sm:p-12 lg:grid-cols-[1fr_1.3fr] lg:gap-16" data-reveal>
+      <div class="absolute inset-0 -z-10" style="background: radial-gradient(70% 80% at 0% 100%, #c8925a26, transparent 70%)" aria-hidden="true"></div>
+      <div>
+        <p class="rotulo">Pedí tu propuesta</p>
+        <h2 class="mt-5 text-5xl sm:text-6xl">Contanos de <em>tu equipo.</em></h2>
+        <p class="mt-5 max-w-sm text-crema-300">Te respondemos con opciones y valor. Sin compromiso.</p>
+        <p class="mt-6 text-sm text-crema-500">¿Preferís hablar directo?{' '}
+          <a href={whatsappUrl(mensajeWa)} target="_blank" rel="noopener" data-accion="whatsapp-empresas-form" class="text-caramelo-300 underline underline-offset-4">Escribinos por WhatsApp</a>.
+        </p>
+      </div>
+
+      <form name="empresas" method="POST" class="grid gap-4 sm:grid-cols-2" data-form-empresas novalidate>
+        <p class="hidden" aria-hidden="true"><label>No completar: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+        <input type="hidden" name="utm" value="" />
+
+        <label class="campo sm:col-span-2">
+          <span>Empresa</span>
+          <input name="empresa" required autocomplete="organization" />
+        </label>
+        <label class="campo">
+          <span>Tu nombre</span>
+          <input name="nombre" required autocomplete="name" />
+        </label>
+        <label class="campo">
+          <span>Cantidad de personas</span>
+          <input name="personas" type="number" inputmode="numeric" min="1" required />
+        </label>
+        <label class="campo">
+          <span>Fecha tentativa</span>
+          <input name="fecha" placeholder="Ej: fines de noviembre" />
+        </label>
+        <label class="campo">
+          <span>Modalidad</span>
+          <select name="modalidad">
+            <option>En nuestra oficina</option>
+            <option>En su sede</option>
+            <option>Todavía no sé</option>
+          </select>
+        </label>
+        <label class="campo">
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" />
+        </label>
+        <label class="campo">
+          <span>Teléfono</span>
+          <input name="telefono" type="tel" autocomplete="tel" />
+        </label>
+        <label class="campo sm:col-span-2">
+          <span>¿Algo más? <em class="not-italic text-crema-500">(opcional)</em></span>
+          <textarea name="mensaje" rows="3"></textarea>
+        </label>
+
+        <p class="text-sm text-brasa-400 sm:col-span-2" data-error hidden></p>
+
+        <div class="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center">
+          <button type="submit" class="btn btn-caramelo">Pedir propuesta</button>
+          <p class="text-xs text-crema-500">Al enviar aceptás nuestra <a href="/privacidad" class="underline underline-offset-2">política de privacidad</a>.</p>
+        </div>
+      </form>
+
+      <div class="hidden flex-col items-start justify-center lg:col-start-2" data-form-ok>
+        <span class="font-display text-6xl italic text-caramelo-300">¡Gracias!</span>
+        <p class="mt-4 max-w-md text-crema-300" data-ok-texto>Recibimos tu consulta. Te respondemos a la brevedad.</p>
+        <a href="#" target="_blank" rel="noopener" data-accion="whatsapp-empresas-ok" data-ok-wa class="btn btn-whatsapp mt-6">
+          <Icono nombre="whatsapp" class="size-[1.1rem]" /> Enviar también por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Preguntas items={faqEmpresas} id="preguntas-empresas" rotulo="Dudas frecuentes" titulo="Lo que suelen <em>preguntarnos</em>" />
+
+  <script>
+    import { obtenerUtm } from '../scripts/utm';
+    import site from '../data/site.json';
+    import { track } from '../scripts/pixel';
+
+    const WHATSAPP = site.whatsapp;
+    const form = document.querySelector<HTMLFormElement>('[data-form-empresas]');
+    const ok = document.querySelector<HTMLElement>('[data-form-ok]');
+    const error = form?.querySelector<HTMLElement>('[data-error]');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const datos = new FormData(form);
+      const v = (k: string) => String(datos.get(k) ?? '').trim();
+
+      if (!v('empresa') || !v('nombre') || !v('personas')) {
+        error!.textContent = 'Completá empresa, tu nombre y cantidad de personas.';
+        error!.hidden = false;
+        return;
+      }
+      if (!v('email') && !v('telefono')) {
+        error!.textContent = 'Dejanos un email o un teléfono para responderte.';
+        error!.hidden = false;
+        return;
+      }
+      error!.hidden = true;
+
+      const utm = obtenerUtm();
+      datos.set('utm', Object.entries(utm).map(([k, x]) => `${k}=${x}`).join('&'));
+
+      const mensaje = [
+        'Hola! Quiero pedir una propuesta de cata para mi empresa.',
+        `Empresa: ${v('empresa')}`,
+        `Nombre: ${v('nombre')}`,
+        `Personas: ${v('personas')}`,
+        v('fecha') && `Fecha tentativa: ${v('fecha')}`,
+        `Modalidad: ${v('modalidad')}`,
+        v('mensaje') && `Comentario: ${v('mensaje')}`,
+      ].filter(Boolean).join('\n');
+      const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+
+      // Las consultas se guardan en una hoja de la planilla de Google y le llegan por mail a Luciana.
+      // La respuesta de Google no se puede leer desde el navegador (no-cors): si no hubo error de red, se da por enviada.
+      let enviado = false;
+      const FORM_URL = import.meta.env.PUBLIC_FORM_URL;
+      if (FORM_URL) {
+        try {
+          await fetch(FORM_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              empresa: v('empresa'), nombre: v('nombre'), personas: v('personas'), fecha: v('fecha'),
+              modalidad: v('modalidad'), email: v('email'), telefono: v('telefono'), mensaje: v('mensaje'),
+              utm: String(datos.get('utm') ?? ''), bot: v('bot-field'),
+            }),
+          });
+          enviado = true;
+        } catch {
+          enviado = false;
+        }
+      }
+
+      track('Lead', { content_name: 'empresas', value: Number(v('personas')) || undefined });
+
+      const texto = ok!.querySelector<HTMLElement>('[data-ok-texto]')!;
+      const boton = ok!.querySelector<HTMLAnchorElement>('[data-ok-wa]')!;
+      boton.href = wa;
+      if (!enviado) {
+        texto.textContent = 'No pudimos enviar el formulario, pero no pasa nada: mandanos la consulta por WhatsApp con este botón.';
+        boton.lastChild!.textContent = ' Enviar por WhatsApp';
+      }
+      form.hidden = true;
+      ok!.classList.replace('hidden', 'flex');
+      ok!.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  </script>
+</Base>

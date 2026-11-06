@@ -1,0 +1,126 @@
+---
+import Icono from './Icono.astro';
+import {
+  type Cata,
+  estadoEfectivo,
+  inicioISO,
+  mensajeListaEspera,
+  mensajeProximamente,
+  mensajeReserva,
+  precioTexto,
+  whatsappUrl,
+} from '../lib/events';
+
+interface Props {
+  cata: Cata;
+  numero?: number;
+}
+const { cata, numero } = Astro.props;
+const estado = estadoEfectivo(cata);
+const agotado = estado === 'agotado';
+const proximamente = estado === 'proximamente';
+const ultimos = estado === 'ultimos-lugares';
+
+// A dónde lleva el botón principal
+let cta: { texto: string; href: string; accion: string; clase: string };
+if (agotado) {
+  cta = { texto: 'Anotate en lista de espera', href: whatsappUrl(mensajeListaEspera(cata)), accion: 'lista-espera', clase: 'btn-fantasma' };
+} else if (proximamente) {
+  cta = { texto: 'Avisame cuando abra', href: whatsappUrl(mensajeProximamente(cata)), accion: 'aviso', clase: 'btn-fantasma' };
+} else if (cata.link_mercadopago) {
+  cta = { texto: 'Reservar mi lugar', href: cata.link_mercadopago, accion: 'reservar-mp', clase: 'btn-caramelo' };
+} else {
+  cta = { texto: 'Reservar mi lugar', href: whatsappUrl(mensajeReserva(cata)), accion: 'reservar-wa', clase: 'btn-caramelo' };
+}
+
+const porcentajeOcupado = cata.cupos_totales > 0
+  ? Math.round(((cata.cupos_totales - Math.max(cata.cupos_disponibles, 0)) / cata.cupos_totales) * 100)
+  : 0;
+
+const [hh, mm] = cata.hora.split(':');
+const horaTexto = mm === '00' ? `${Number(hh)} hs` : `${Number(hh)}:${mm} hs`;
+
+// Bloque de fecha grande: "25" / "oct" / "dom"
+const inicio = new Date(inicioISO(cata));
+const fmt = (o: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat('es-AR', { ...o, timeZone: 'America/Argentina/Buenos_Aires' }).format(inicio).replace('.', '');
+const dia = fmt({ day: 'numeric' });
+const mes = fmt({ month: 'short' });
+const diaSemana = fmt({ weekday: 'long' });
+
+const estados = {
+  abierto: { texto: 'Reservas abiertas', clase: 'text-salvia-300', punto: 'bg-salvia-300' },
+  'ultimos-lugares': {
+    texto: cata.cupos_disponibles === 1 ? 'Queda 1 lugar' : `Quedan ${cata.cupos_disponibles} lugares`,
+    clase: 'text-brasa-400', punto: 'bg-brasa-400 animate-pulse',
+  },
+  agotado: { texto: 'Agotado', clase: 'text-crema-500', punto: 'bg-crema-500' },
+  proximamente: { texto: 'Próximamente', clase: 'text-caramelo-300', punto: 'bg-caramelo-300' },
+}[estado];
+---
+<article
+  class:list={['superficie spotlight group relative flex h-full flex-col overflow-hidden', { 'opacity-75': agotado }]}
+  data-cata={cata.id}
+  data-inicio={inicioISO(cata)}
+  data-estado={estado}
+>
+  <div class="flex items-center justify-between px-6 pt-5 text-xs">
+    <span class:list={['inline-flex items-center gap-2 font-semibold', estados.clase]}>
+      <span class:list={['size-1.5 rounded-full', estados.punto]} aria-hidden="true"></span>{estados.texto}
+    </span>
+    <span class="tracking-[0.2em] text-crema-500 tabular-nums">{numero != null ? `N° ${String(numero).padStart(3, '0')}` : ''}</span>
+  </div>
+
+  <div class="grid grid-cols-[auto_1fr] items-start gap-5 px-6 pt-6 pb-7">
+    <div class="w-16 border-r border-crema-50/10 pr-5 text-center">
+      <span class="block font-display text-6xl leading-[0.85] text-crema-50 tabular-nums">{dia}</span>
+      <span class="mt-2 block text-xs font-semibold uppercase tracking-[0.2em] text-caramelo-300">{mes}</span>
+    </div>
+    <div class="min-w-0">
+      <h3 class="text-[2rem] leading-[1.02] sm:text-[2.15rem]">{cata.tipo.replace(/^Cata de /, 'Cata de\u00a0')}</h3>
+      <p class="mt-3 text-[0.95rem] text-crema-300">
+        <span class="first-letter:uppercase inline-block">{diaSemana}</span> · {horaTexto}<br />
+        {cata.barrio}, CABA
+      </p>
+    </div>
+  </div>
+
+  <div class="relative mx-6" aria-hidden="true">
+    <div class="linea-perforada"></div>
+    <span class="absolute top-1/2 -left-9 size-6 -translate-y-1/2 rounded-full bg-espresso-900"></span>
+    <span class="absolute top-1/2 -right-9 size-6 -translate-y-1/2 rounded-full bg-espresso-900"></span>
+  </div>
+
+  <div class="mt-auto flex flex-col gap-4 px-6 pt-6 pb-6">
+    <div class="flex items-end justify-between gap-3">
+      <div>
+        <span class="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-crema-500">Valor</span>
+        <span class:list={['font-display leading-none', cata.precio == null ? 'text-2xl italic text-crema-300' : 'text-3xl text-caramelo-200']}>
+          {precioTexto(cata)}
+        </span>
+      </div>
+      {!proximamente && (
+        <div class="text-right">
+          <span class="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-crema-500">Lugares</span>
+          <span class="text-sm font-semibold tabular-nums text-crema-50">
+            {agotado ? 'Completo' : `${cata.cupos_disponibles} / ${cata.cupos_totales}`}
+          </span>
+        </div>
+      )}
+    </div>
+
+    {!proximamente && (
+      <div class="h-px overflow-hidden bg-crema-50/10" role="presentation">
+        <div class:list={['h-full', ultimos || agotado ? 'bg-brasa-400' : 'bg-caramelo-400']}
+          style={`width:${porcentajeOcupado}%`}></div>
+      </div>
+    )}
+
+    <a href={cta.href} class:list={['btn w-full', cta.clase]} target="_blank" rel="noopener"
+      data-accion={cta.accion} data-cata={cata.id}>
+      {cta.accion !== 'reservar-mp' && <Icono nombre="whatsapp" class="size-[1.1rem]" />}
+      {cta.texto}
+      {cta.accion.startsWith('reservar') && <Icono nombre="flecha" class="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />}
+    </a>
+  </div>
+</article>

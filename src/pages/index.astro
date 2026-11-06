@@ -1,0 +1,336 @@
+---
+import Base from '../layouts/Base.astro';
+import Icono from '../components/Icono.astro';
+import TarjetaCata from '../components/TarjetaCata.astro';
+import FondoHero from '../components/islas/FondoHero';
+import Revelacion from '../components/islas/Revelacion';
+import ProductoFlip from '../components/islas/ProductoFlip';
+import Foto from '../components/Foto.astro';
+import testimonios from '../data/testimonios.json';
+import faq from '../data/faq.json';
+import Preguntas from '../components/Preguntas.astro';
+import site from '../data/site.json';
+import { proximasCatas, whatsappUrl, estadoEfectivo } from '../lib/events';
+import { schemaEventos, schemaPreguntas } from '../lib/schema';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+const catas = proximasCatas();
+const proxima = catas.find((c) => ['abierto', 'ultimos-lugares'].includes(estadoEfectivo(c)));
+const proximaTexto = proxima
+  ? `${proxima.tipo.replace(/^Cata de /, '')} · ${new Intl.DateTimeFormat('es-AR', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'America/Argentina/Buenos_Aires' }).format(new Date(`${proxima.fecha}T12:00:00-03:00`)).replace(/[.,]/g, '')} · ${proxima.barrio}`
+  : null;
+
+const pasos = [
+  { t: 'Llegás', d: 'Una mesa compartida, algo rico por descubrir y una experiencia que despierta tu curiosidad.' },
+  { t: 'A ciegas', d: 'Con los ojos cubiertos, las marcas desaparecen. Es momento de confiar en tus sentidos.' },
+  { t: 'Probás y elegís', d: 'Descubrís sin apuro, sintiendo cada detalle. Comparás un mismo producto de distintos lugares y elegís tu favorito.', pregunta: '¿Lo habrías elegido también con los ojos abiertos?' },
+  { t: 'Se revela el misterio', d: 'Llega el momento de descubrir quién estaba detrás de cada muestra. ¿Te imaginabas el resultado?', revelar: true },
+];
+
+const ocasiones = [
+  {
+    titulo: 'Con amigos', em: 'y con pruebas.',
+    texto: 'Dejen de discutir quién tiene razón con el alfajor. Ahora lo discuten con evidencia.',
+    foto: 'amigos-sillones.jpeg', alt: 'Grupo de amigos sonriendo después de una cata', grande: true,
+  },
+  {
+    titulo: 'En pareja', em: 'una cita distinta.',
+    texto: 'Descubran si tienen el mismo paladar. O si mejor no preguntar.',
+  },
+  {
+    titulo: 'Cumpleaños', em: 'festejá probando.',
+    texto: 'Venite con tu grupo. ¿Son muchos? Consultanos por una fecha para ustedes.',
+    wa: 'Hola! Quiero festejar un cumpleaños en una cata. Somos aprox. __ personas.',
+    nota: 'TODO: confirmar si hacen fechas privadas.',
+  },
+  {
+    titulo: 'Para regalar', em: 'al que tiene todo.',
+    texto: 'Regalá una experiencia en vez de otra cosa que va a un cajón.',
+    href: '/regala', cta: 'Regalar una cata',
+    ancho: true,
+  },
+];
+
+const galeria = [
+  { src: 'cata-vendada-alfajor.jpg', alt: 'Participante con los ojos vendados probando un alfajor', ratio: '2/3' },
+  { src: 'mesa-planillas-antifaces.jpg', alt: 'Mesa de cata con antifaces y planillas de puntaje', ratio: '3/2' },
+  { src: 'grupo-sonriendo.jpeg', alt: 'Grupo sonriendo alrededor de la mesa de cata', ratio: '3/4' },
+  { src: 'cata-vendada-oliendo.jpg', alt: 'Participante con antifaz oliendo una muestra', ratio: '2/3' },
+  { src: 'sala-entera-a-ciegas.jpg', alt: 'Una sala entera probando con antifaces mientras pasa una bandeja de chipá', ratio: '3/4' },
+  { src: 'luciana-explicando.jpg', alt: 'Luciana explicando la dinámica a la mesa', ratio: '2/3' },
+  { src: 'grupo-vendado-probando.jpg', alt: 'Grupo con antifaces probando muestras', ratio: '3/4' },
+  { src: 'cata-vendada-caja.jpeg', alt: 'Luciana acercando una muestra a una participante vendada', ratio: '3/4' },
+] as const;
+
+// Textos de Luciana. Para sumar foto: guardala en src/assets/img/ y poné el nombre en `foto`.
+const productosBase = [
+  { nombre: 'Alfajores', frase: 'Un clásico, muchos matices', foto: 'producto-alfajores.jpg',
+    detalle: 'Chocolate, dulce de leche y distintas marcas por descubrir. Probá a ciegas, compará, elegí y jugá a adivinar qué marca hay detrás de cada alfajor. ¿Cuántas vas a reconocer?' },
+  { nombre: 'Medialunas', frase: '¿Todas las medialunas son iguales?', foto: 'producto-medialunas.png',
+    detalle: 'Detrás de una forma conocida, hay sabores, aromas y texturas que marcan la diferencia. Cerrá los ojos, prestá atención a cada detalle y elegí la que más te guste.' },
+  { nombre: 'Sándwiches de Miga', frase: 'Mucho más que miga y relleno', foto: 'producto-miga.jpg',
+    detalle: 'A simple vista, parecen conocidos. Pero con los ojos cerrados, cada bocado se convierte en una pista. Agudizá los sentidos, descubrí qué sabores se esconden en cada combinación y poné a prueba tu paladar.' },
+  { nombre: 'Chipá Clásico', frase: 'Que gane el mejor', foto: 'producto-chipa-clasico.jpg',
+    detalle: 'Distintos chipás, una misma pasión por el queso y muchas diferencias por descubrir. Dejate llevar por los sentidos y encontrá el que más te guste.' },
+  { nombre: 'Chipá No Tradicionales', frase: 'Hay algo más que queso', foto: 'producto-chipa-saborizados.jpg',
+    detalle: 'Cada chipá esconde una combinación de sabores que vas a tener que descubrir con los ojos cerrados. Prestá atención a los aromas, las texturas y cada matiz: a veces, el ingrediente que menos esperás es el que cambia todo.' },
+  { nombre: 'Churros', frase: 'Una tentación a ciegas', foto: 'producto-churros.jpg',
+    detalle: 'Dorado, tentador y con dulce de leche… Cada churro tiene su propia personalidad. Apagá la vista, dejate llevar por los aromas y las texturas, y descubrí cuánto puede cambiar un clásico cuando confiás en tus sentidos.' },
+  { nombre: 'Empanadas Regionales', frase: 'Un país, muchas empanadas', foto: 'producto-empanadas.png',
+    detalle: 'Cada provincia tiene su manera de rendirle homenaje a un clásico argentino. Probá empanadas de carne de distintas regiones, descubrí sus sabores, aromas y secretos, y dejá que tus sentidos decidan cuál merece el primer puesto.' },
+  { nombre: 'Frambuesas bañadas en chocolate', frase: 'Pequeños bocados, grandes diferencias', foto: 'producto-frambuesas.jpg',
+    detalle: 'Bajo una capa de chocolate, cada frambuesa esconde una experiencia distinta. Dulzor, acidez, intensidad y textura se encuentran en pequeños bocados que invitan a detenerse, disfrutar y descubrir cuál conquista tu paladar.' },
+];
+
+// Las fotos de producto se optimizan acá (WebP, 600px) y se le pasa la URL a la tarjeta que se da vuelta.
+const imagenes = import.meta.glob<{ default: ImageMetadata }>('/src/assets/img/*.{jpg,jpeg,png,webp}', { eager: true });
+const productos = await Promise.all(productosBase.map(async ({ foto, ...p }) => {
+  const img = foto ? imagenes[`/src/assets/img/${foto}`]?.default : undefined;
+  return { ...p, foto: img ? (await getImage({ src: img, width: 600, format: 'webp' })).src : undefined };
+}));
+---
+<Base
+  titulo="Catas a ciegas en Buenos Aires · Catas No Tradicionales"
+  schema={[...schemaEventos(catas), schemaPreguntas(faq)]}
+  descripcion="Catas a ciegas de alfajores, medialunas, chipá, empanadas y más en CABA. Probá sin ver la marca, elegí tu favorito y descubrí el misterio. Reservá tu lugar."
+>
+  <!-- ============ HERO ============ -->
+  <section class="grano relative isolate flex min-h-[100svh] flex-col overflow-hidden">
+    <div class="absolute inset-0 -z-10" style="background: radial-gradient(120% 70% at 70% 0%, #8a5a3355, transparent 60%), radial-gradient(90% 60% at 0% 100%, #2e1b10, transparent 70%), #17100b">
+      <div class="fondo-calido" aria-hidden="true"></div>
+      <FondoHero client:media="(min-width: 1024px)" />
+    </div>
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-b from-transparent to-espresso-900" aria-hidden="true"></div>
+
+    <div class="contenedor flex flex-1 flex-col justify-end pt-28 pb-10 sm:justify-center sm:pb-20">
+      <p class="rotulo">Catas a ciegas · Buenos Aires</p>
+
+      <h1 class="desenfoque mt-6 text-[3.4rem] leading-[0.92] sm:text-8xl lg:text-[8.5rem]">
+        <span style="--i:0">¿Elegirías lo mismo</span>{' '}<br />
+        <span style="--i:1">con los ojos</span>{' '}
+        <em style="--i:2">cerrados?</em>
+      </h1>
+
+      <p class="aparecer mt-7 max-w-md text-lg text-crema-300 sm:text-xl" style="--delay:0ms">
+        La experiencia en donde comés lo conocido, como si fuera la primera vez.
+      </p>
+
+      <div class="aparecer mt-9 flex flex-col gap-3 sm:flex-row" style="--delay:60ms">
+        <a href="#fechas" class="btn btn-primario group">
+          Ver próximas fechas
+          <Icono nombre="flecha" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </a>
+        <a href={whatsappUrl(site.mensajeWhatsappGeneral)} target="_blank" rel="noopener" data-accion="whatsapp-hero" class="btn btn-fantasma">
+          <Icono nombre="whatsapp" class="size-[1.1rem]" /> Preguntanos por WhatsApp
+        </a>
+      </div>
+
+      {proximaTexto && (
+        <a href="#fechas" class="aparecer mt-8 inline-flex max-w-full items-center gap-3 self-start rounded-full border border-crema-50/10 bg-espresso-950/40 py-2 pr-4 pl-2 text-sm backdrop-blur-md transition-colors hover:border-caramelo-300/40"
+          style="--delay:120ms">
+          <span class="rounded-full bg-caramelo-400/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-caramelo-300">Próxima</span>
+          <span class="truncate text-crema-300 first-letter:uppercase">{proximaTexto}</span>
+        </a>
+      )}
+    </div>
+  </section>
+
+  <!-- ============ CÓMO FUNCIONA ============ -->
+  <section id="como-funciona" class="contenedor py-24 sm:py-32">
+    <div class="grid gap-14 lg:grid-cols-[1fr_1.35fr] lg:gap-20">
+      <div class="lg:sticky lg:top-28 lg:self-start" data-reveal>
+        <p class="rotulo">Cómo funciona</p>
+        <h2 class="titulo-seccion mt-5">Cuando no ves la marca, <em>solo importa lo que sentís.</em></h2>
+        <p class="mt-6 max-w-sm text-crema-300">Dos horas para probar, comparar, intercambiar opiniones y reírte de las sorpresas. Sin etiquetas ni ideas preconcebidas.</p>
+        <figure class="mt-10 hidden max-w-sm lg:block">
+          <Foto src="luciana-anfitriona.jpg" alt="Luciana, la anfitriona, presentando una bandeja de muestras" ratio="4/5" />
+          <figcaption class="mt-3 text-sm text-crema-500">Luciana, tu anfitriona.</figcaption>
+        </figure>
+      </div>
+
+      <ol class="border-t border-crema-50/10">
+        {pasos.map((p, i) => (
+          <li class="grid grid-cols-[3.5rem_1fr] gap-4 border-b border-crema-50/10 py-8 sm:grid-cols-[5rem_1fr] sm:py-10" data-reveal style={`--delay:${i * 80}ms`}>
+            <span class="font-display text-4xl italic leading-none text-caramelo-400/80 tabular-nums sm:text-5xl">0{i + 1}</span>
+            <div>
+              <h3 class="text-3xl sm:text-4xl">
+                {p.revelar ? <Revelacion client:visible texto={p.t} /> : p.t}
+              </h3>
+              <p class="mt-3 max-w-md text-crema-300">{p.d}</p>
+              {p.pregunta && <p class="mt-3 max-w-md font-display text-xl italic text-caramelo-200">{p.pregunta}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ PRÓXIMAS CATAS ============ -->
+  <section id="fechas" class="relative py-24 sm:py-32">
+    <div class="absolute inset-0 -z-10" style="background: radial-gradient(60% 35% at 50% 25%, #6b4a3126, transparent 100%)" aria-hidden="true"></div>
+    <div class="contenedor">
+      <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end" data-reveal>
+        <div>
+          <p class="rotulo">Agenda</p>
+          <h2 class="titulo-seccion mt-5">Próximas <em>catas</em></h2>
+        </div>
+        <p class="max-w-xs text-crema-300">Encuentros en grupos reducidos, en distintos barrios de CABA. Cada experiencia tiene sus cupos limitados.</p>
+      </div>
+
+      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-lista-catas>
+        {catas.map((c, i) => (
+          <div data-item-cata data-reveal style={`--delay:${i * 90}ms`}>
+            <TarjetaCata cata={c} numero={i + 1} />
+          </div>
+        ))}
+      </div>
+      <p data-sin-catas hidden={catas.length > 0} class="superficie mt-12 p-8 text-center text-crema-300">
+        Estamos armando las próximas fechas. <a class="text-caramelo-300 underline underline-offset-4" href={`https://instagram.com/${site.instagram}`}>Seguinos en Instagram</a> para enterarte primero.
+      </p>
+
+      <p class="mt-10 text-center text-crema-300">
+        ¿Ninguna fecha te queda bien?
+        <a href={whatsappUrl('Hola! Ninguna fecha me queda bien, ¿me avisan cuando haya nuevas?')} target="_blank" rel="noopener" data-accion="whatsapp-sin-fecha"
+          class="font-semibold text-caramelo-300 underline decoration-caramelo-300/40 underline-offset-4 hover:decoration-caramelo-300">Avisame de las próximas</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ QUÉ VAS A PROBAR ============ -->
+  <section class="py-24 sm:py-32">
+    <div class="contenedor" data-reveal>
+      <p class="rotulo">Qué vas a probar</p>
+      <div class="mt-5 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <h2 class="titulo-seccion max-w-2xl">Lo de siempre, <em>como nunca.</em></h2>
+        <p class="max-w-xs text-crema-300">Descubrí todo lo que tus sentidos todavía no te contaron. Tocá cada muestra para ver qué es.</p>
+      </div>
+      <div class="mt-8 flex items-center justify-between gap-4">
+        <p class="text-sm text-crema-500"><span class="sm:hidden">Deslizá para ver todas →</span><span class="hidden sm:inline">Son 8 catas distintas. Usá las flechas para verlas todas.</span></p>
+        <div class="flex gap-2">
+          <button type="button" data-carrusel="prev" class="grid size-12 place-items-center rounded-full border border-crema-50/20 text-crema-50 transition-colors hover:border-caramelo-300/60 hover:text-caramelo-200 disabled:opacity-30" aria-label="Ver tarjetas anteriores">
+            <Icono nombre="flecha" class="size-5 rotate-180" />
+          </button>
+          <button type="button" data-carrusel="next" class="grid size-12 place-items-center rounded-full border border-crema-50/20 text-crema-50 transition-colors hover:border-caramelo-300/60 hover:text-caramelo-200 disabled:opacity-30" aria-label="Ver más tarjetas">
+            <Icono nombre="flecha" class="size-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div data-carrusel-pista tabindex="-1" class="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-[max(1rem,calc((100vw-72rem)/2+2rem))] pb-8 [scrollbar-width:none]">
+      {productos.map((p, i) => (
+        <div class="shrink-0 snap-center">
+          <ProductoFlip client:visible numero={i + 1} {...p} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ OCASIONES ============ -->
+  <section class="contenedor py-24 sm:py-32">
+    <div data-reveal>
+      <p class="rotulo">Para quién</p>
+      <h2 class="titulo-seccion mt-5 max-w-3xl">Un plan distinto <em>en Buenos Aires.</em></h2>
+    </div>
+    <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {ocasiones.map((o, i) => (
+        <article class:list={['superficie spotlight flex flex-col overflow-hidden', { 'md:col-span-2 lg:row-span-2 lg:col-span-1': o.grande, 'md:col-span-2': o.ancho }]}
+          data-reveal style={`--delay:${i * 80}ms`}>
+          {o.foto && <Foto src={o.foto} alt={o.alt ?? ''} ratio="4/3" class="rounded-none! lg:aspect-auto! lg:flex-1" />}
+          <div class="flex flex-1 flex-col p-6 sm:p-7">
+            <h3 class="text-4xl">{o.titulo}, <em>{o.em}</em></h3>
+            <p class="mt-3 text-crema-300">{o.texto}</p>
+            {o.nota && <p class="mt-2 text-xs text-crema-500">{o.nota}</p>}
+            {o.wa && (
+              <a href={whatsappUrl(o.wa)} target="_blank" rel="noopener" data-accion="whatsapp-ocasion"
+                class="mt-auto inline-flex min-h-11 items-center gap-2 self-start pt-5 font-semibold text-caramelo-300 hover:text-caramelo-200">
+                Consultanos <Icono nombre="flecha" class="size-4" />
+              </a>
+            )}
+            {o.href && (
+              <a href={o.href} class="mt-auto inline-flex min-h-11 items-center gap-2 self-start pt-5 font-semibold text-caramelo-300 hover:text-caramelo-200">
+                {o.cta} <Icono nombre="flecha" class="size-4" />
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ GALERÍA ============ -->
+  <section class="py-24 sm:py-32">
+    <div class="contenedor">
+      <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end" data-reveal>
+        <div>
+          <p class="rotulo">Así se vive</p>
+          <h2 class="titulo-seccion mt-5">Risas, debates <em>y sorpresas.</em></h2>
+        </div>
+        <a href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener" class="btn btn-fantasma self-start sm:self-auto">
+          <Icono nombre="instagram" class="size-[1.1rem]" /> @{site.instagram}
+        </a>
+      </div>
+      <div class="mt-12 columns-2 gap-3 sm:gap-5 lg:columns-3">
+        {galeria.map((g, i) => (
+          <div class="mb-3 break-inside-avoid sm:mb-5" data-reveal style={`--delay:${(i % 3) * 80}ms`}>
+            <Foto src={g.src} alt={g.alt} ratio={g.ratio} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIOS ============ -->
+  <section class="contenedor py-24 sm:py-32">
+    <div data-reveal>
+      <p class="rotulo">Lo que dicen</p>
+      <h2 class="titulo-seccion mt-5 max-w-3xl">Vinieron por el alfajor, <em>se quedaron por la charla.</em></h2>
+      <p class="mt-5 max-w-md text-crema-300">Mensajes reales que nos mandaron por WhatsApp después de cada cata.</p>
+    </div>
+    <div class="mt-12 columns-1 gap-5 md:columns-2 lg:columns-3">
+      {testimonios.map((t: { texto: string; cata?: string }, i: number) => (
+        <figure class="superficie mb-5 flex break-inside-avoid flex-col p-7" data-reveal style={`--delay:${(i % 3) * 80}ms`}>
+          <span class="font-display text-6xl leading-none text-caramelo-400/60" aria-hidden="true">“</span>
+          <blockquote class="-mt-4 font-display text-[1.45rem] leading-snug text-crema-50">{t.texto}</blockquote>
+          <figcaption class="mt-5 flex items-center gap-2 text-sm text-crema-500">
+            <Icono nombre="whatsapp" class="size-4 text-[#9ff0bf]/70" />
+            {t.cata ? t.cata : 'Mensaje de una participante'}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ EMPRESAS (TEASER) ============ -->
+  <section class="contenedor py-12 sm:py-20">
+    <div class="superficie grid overflow-hidden lg:grid-cols-2" data-reveal>
+      <div class="flex flex-col justify-center p-7 sm:p-12">
+        <p class="rotulo">Para empresas</p>
+        <h2 class="mt-5 text-5xl sm:text-6xl">Team building <em>gastronómico.</em></h2>
+        <p class="mt-5 max-w-md text-crema-300">
+          Transformá tu próxima reunión de equipo en una experiencia que no se olvida. Dinámica grupal, ranking final y cero organización de tu lado.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/empresas" class="btn btn-caramelo">Pedí tu propuesta <Icono nombre="flecha" class="size-4" /></a>
+        </div>
+      </div>
+      <Foto src="mesa-larga-grupo.jpg" alt="Grupo grande compartiendo una cata en una mesa larga" ratio="3/2" class="rounded-none! lg:h-full lg:aspect-auto!" />
+    </div>
+  </section>
+
+  <!-- ============ PREGUNTAS ============ -->
+  <Preguntas items={faq} />
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="contenedor pb-24">
+    <div class="superficie grano relative overflow-hidden px-6 py-16 text-center sm:px-16 sm:py-24" data-reveal>
+      <div class="absolute inset-0 -z-10" style="background: radial-gradient(80% 90% at 50% 120%, #c8925a40, transparent 70%)" aria-hidden="true"></div>
+      <h2 class="mx-auto max-w-3xl text-5xl sm:text-7xl">Volvé a sentir la sorpresa <em>del primer bocado.</em></h2>
+      <p class="mx-auto mt-6 max-w-md text-crema-300">Una experiencia para volver a sorprenderte con cada bocado.</p>
+      <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href="#fechas" class="btn btn-primario">Reservar mi lugar</a>
+        <a href="/empresas" class="btn btn-fantasma">Para empresas</a>
+      </div>
+    </div>
+  </section>
+</Base>

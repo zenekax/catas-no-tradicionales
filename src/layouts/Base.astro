@@ -1,0 +1,128 @@
+---
+import '../styles/global.css';
+import Encabezado from '../components/Encabezado.astro';
+import Pie from '../components/Pie.astro';
+import site from '../data/site.json';
+import { schemaOrganizacion } from '../lib/schema';
+import fuenteTitulos from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  noindex?: boolean;
+  imagen?: string; // ruta dentro de /public para compartir en redes
+  schema?: object[]; // datos estructurados extra de la página
+}
+const { titulo, descripcion, noindex = false, imagen = '/og.jpg', schema = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const imagenAbsoluta = new URL(imagen, site.url).href;
+const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID?.trim();
+const datosEstructurados = [schemaOrganizacion(), ...schema];
+---
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#17100b" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href={fuenteTitulos} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content={site.nombre} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imagenAbsoluta} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={imagenAbsoluta} />
+    {datosEstructurados.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+    {pixelId && (
+      <script is:inline define:vars={{ pixelId }}>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', pixelId);
+        fbq('track', 'PageView');
+      </script>
+    )}
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body class="min-h-dvh">
+    <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-crema-50 focus:px-4 focus:py-2 focus:text-espresso-950">
+      Saltar al contenido
+    </a>
+    <Encabezado />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Pie />
+
+    <script>
+      import { iniciarUtm } from '../scripts/utm';
+      import { iniciarPixel } from '../scripts/pixel';
+      iniciarUtm();
+      iniciarPixel();
+
+      // 1) Ocultar catas cuya fecha ya pasó, aunque el sitio no se haya vuelto a publicar.
+      const ahora = Date.now();
+      document.querySelectorAll<HTMLElement>('[data-inicio]').forEach((el) => {
+        if (new Date(el.dataset.inicio!).getTime() <= ahora) (el.closest('[data-item-cata]') ?? el).remove();
+      });
+      document.querySelectorAll<HTMLElement>('[data-lista-catas]').forEach((lista) => {
+        const vacio = lista.parentElement?.querySelector<HTMLElement>('[data-sin-catas]');
+        if (vacio && !lista.querySelector('[data-inicio]')) vacio.hidden = false;
+      });
+
+      // 1b) Carrusel de productos: flechas para PC con mouse (la rueda no mueve de costado y la barra está oculta)
+      document.querySelectorAll<HTMLElement>('[data-carrusel-pista]').forEach((pista) => {
+        const seccion = pista.parentElement!;
+        const prev = seccion.querySelector<HTMLButtonElement>('[data-carrusel="prev"]');
+        const next = seccion.querySelector<HTMLButtonElement>('[data-carrusel="next"]');
+        const paso = () => (pista.firstElementChild as HTMLElement | null)?.getBoundingClientRect().width ?? 300;
+        const actualizar = () => {
+          if (prev) prev.disabled = pista.scrollLeft < 8;
+          if (next) next.disabled = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 8;
+        };
+        prev?.addEventListener('click', () => pista.scrollBy({ left: -(paso() + 20), behavior: 'smooth' }));
+        next?.addEventListener('click', () => pista.scrollBy({ left: paso() + 20, behavior: 'smooth' }));
+        pista.addEventListener('scroll', actualizar, { passive: true });
+        actualizar();
+      });
+
+      // 2) Spotlight: el brillo sigue al mouse en las tarjetas
+      document.querySelectorAll<HTMLElement>('.spotlight').forEach((el) => {
+        el.addEventListener('pointermove', (e) => {
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+          el.style.setProperty('--my', `${e.clientY - r.top}px`);
+        });
+      });
+
+      // 3) Reveal on scroll (el CSS ya lo desactiva con prefers-reduced-motion)
+      const els = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+          }),
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('visible'));
+      }
+    </script>
+  </body>
+</html>

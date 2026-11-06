@@ -1,0 +1,35 @@
+---
+import Legal from '../layouts/Legal.astro';
+import site from '../data/site.json';
+---
+<Legal titulo="Política de privacidad" descripcion="Cómo tratamos tus datos personales en catasnotradicionales.com." actualizado="TODO: fecha">
+  <p>En {site.nombre} cuidamos tus datos. Esta política explica qué información recolectamos en este sitio, para qué la usamos y qué derechos tenés, de acuerdo con la Ley 25.326 de Protección de los Datos Personales de la República Argentina.</p>
+
+  <h2>1. Responsable</h2>
+  <p><span class="todo">TODO: nombre o razón social, CUIT y domicilio del responsable.</span> Contacto: <a href={`https://wa.me/${site.whatsapp}`}>WhatsApp {site.whatsappVisible}</a>.</p>
+
+  <h2>2. Qué datos recolectamos</h2>
+  <ul>
+    <li><strong>Formulario para empresas:</strong> nombre, empresa, email, teléfono, cantidad de personas, fecha tentativa y lo que quieras contarnos.</li>
+    <li><strong>WhatsApp:</strong> si nos escribís, los datos que compartas en esa conversación.</li>
+    <li><strong>Pagos:</strong> los procesa Mercado Pago. Nosotros no vemos ni guardamos datos de tu tarjeta.</li>
+    <li><strong>Datos de navegación:</strong> usamos el Píxel de Meta para medir nuestras campañas publicitarias. También registramos de qué campaña llegaste (parámetros UTM).</li>
+  </ul>
+
+  <h2>3. Para qué los usamos</h2>
+  <ul>
+    <li>Responder consultas y gestionar reservas.</li>
+    <li>Enviarte propuestas si las pediste.</li>
+    <li>Medir y mejorar nuestras publicidades.</li>
+  </ul>
+  <p>No vendemos ni cedemos tus datos a terceros, salvo a los proveedores necesarios para operar: Netlify (hosting y formularios), Meta (medición de anuncios y WhatsApp) y Mercado Pago (pagos).</p>
+
+  <h2>4. Tus derechos</h2>
+  <p>Podés pedirnos acceder, corregir o eliminar tus datos escribiéndonos por WhatsApp. La Agencia de Acceso a la Información Pública, en su carácter de órgano de control de la Ley 25.326, tiene la atribución de atender las denuncias y reclamos que se interpongan con relación al incumplimiento de las normas sobre protección de datos personales.</p>
+
+  <h2>5. Cookies</h2>
+  <p>El Píxel de Meta usa cookies para medir la efectividad de los anuncios. Podés bloquearlas desde la configuración de tu navegador o desde las preferencias de anuncios de tu cuenta de Meta.</p>
+
+  <h2>6. Cambios</h2>
+  <p>Si cambiamos esta política, vamos a publicar la nueva versión en esta página con su fecha de actualización.</p>
+</Legal>

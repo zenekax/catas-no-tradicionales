@@ -1,0 +1,67 @@
+[
+  {
+    "id": "EJEMPLO-alfajores-2026-10-25",
+    "tipo": "Cata de alfajores",
+    "fecha": "2026-10-25",
+    "hora": "16:30",
+    "barrio": "Almagro",
+    "lugar": "TODO: dirección (EJEMPLO, no es una fecha real)",
+    "cupos_totales": 12,
+    "cupos_disponibles": 7,
+    "precio": null,
+    "link_mercadopago": "",
+    "estado": "abierto"
+  },
+  {
+    "id": "EJEMPLO-medialunas-2026-11-01",
+    "tipo": "Cata de medialunas",
+    "fecha": "2026-11-01",
+    "hora": "10:30",
+    "barrio": "Caballito",
+    "lugar": "TODO: dirección (EJEMPLO, no es una fecha real)",
+    "cupos_totales": 12,
+    "cupos_disponibles": 2,
+    "precio": 25000,
+    "link_mercadopago": "",
+    "estado": "ultimos-lugares"
+  },
+  {
+    "id": "EJEMPLO-miga-2026-11-08",
+    "tipo": "Cata de sándwiches de miga",
+    "fecha": "2026-11-08",
+    "hora": "17:00",
+    "barrio": "Colegiales",
+    "lugar": "TODO: dirección (EJEMPLO, no es una fecha real)",
+    "cupos_totales": 16,
+    "cupos_disponibles": 0,
+    "precio": null,
+    "link_mercadopago": "",
+    "estado": "agotado"
+  },
+  {
+    "id": "EJEMPLO-dulce-de-leche-2026-11-22",
+    "tipo": "Cata de dulce de leche",
+    "fecha": "2026-11-22",
+    "hora": "16:00",
+    "barrio": "TODO",
+    "lugar": "TODO: dirección (EJEMPLO, no es una fecha real)",
+    "cupos_totales": 12,
+    "cupos_disponibles": 12,
+    "precio": null,
+    "link_mercadopago": "",
+    "estado": "proximamente"
+  },
+  {
+    "id": "EJEMPLO-pasado-2026-09-01",
+    "tipo": "Cata de chipá (EJEMPLO pasado: no debería verse)",
+    "fecha": "2026-09-01",
+    "hora": "16:00",
+    "barrio": "Almagro",
+    "lugar": "TODO",
+    "cupos_totales": 12,
+    "cupos_disponibles": 0,
+    "precio": null,
+    "link_mercadopago": "",
+    "estado": "agotado"
+  }
+]

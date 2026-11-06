@@ -1,0 +1,154 @@
+---
+import Base from '../layouts/Base.astro';
+import Icono from '../components/Icono.astro';
+import Foto from '../components/Foto.astro';
+import Preguntas from '../components/Preguntas.astro';
+import FondoHero from '../components/islas/FondoHero';
+import precios from '../data/precios.json';
+import faq from '../data/faq-regalo.json';
+import { whatsappUrl } from '../lib/events';
+import { schemaPreguntas } from '../lib/schema';
+
+const mensajeBase = 'Hola! Quiero regalar una cata a ciegas. ¿Cómo hago?';
+const formato = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+const desde = Math.min(...precios.map((p) => p.precio));
+
+const pasos = [
+  { t: 'Elegís', d: 'Una cata puntual o un valor, lo que prefieras. Si no sabés cuál, te ayudamos a elegir según a quién se lo regalás.' },
+  { t: 'Pagás', d: 'Por Mercado Pago o transferencia al alias CATASNOTRADICIONALES (Personal Pay). Te confirmamos los datos por WhatsApp.' },
+  { t: 'Recibís el voucher', d: 'Lo armamos con el nombre y un mensaje tuyo, listo para mandar o imprimir. Para dar sorpresa o llevar en mano.' },
+];
+
+const ocasiones = ['Cumpleaños', 'Aniversario', 'Amigo invisible', 'Día de la madre', 'Un "gracias"', 'Porque sí'];
+---
+<Base
+  titulo="Regalá una cata a ciegas en Buenos Aires · Catas No Tradicionales"
+  descripcion="Regalá una experiencia en vez de otra cosa que va a un cajón: un voucher para una cata a ciegas de alfajores, chipá, empanadas y más en CABA. Armado con tu mensaje."
+  schema={[schemaPreguntas(faq)]}
+>
+  <!-- ============ HERO ============ -->
+  <section class="grano relative isolate flex min-h-[85svh] flex-col overflow-hidden">
+    <div class="absolute inset-0 -z-10" style="background: radial-gradient(120% 70% at 70% 0%, #8a5a3355, transparent 60%), #17100b">
+      <div class="fondo-calido" aria-hidden="true"></div>
+      <FondoHero client:media="(min-width: 1024px)" />
+    </div>
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-b from-transparent to-espresso-900" aria-hidden="true"></div>
+
+    <div class="contenedor flex flex-1 flex-col justify-end pt-28 pb-12 sm:justify-center">
+      <p class="rotulo">Gift card · Regalá una cata</p>
+      <h1 class="desenfoque mt-6 text-[3.4rem] leading-[0.92] sm:text-8xl lg:text-[8rem]">
+        <span style="--i:0">¿Qué le regalás</span>{' '}<br />
+        <span style="--i:1">al que tiene</span>{' '}
+        <em style="--i:2">todo?</em>
+      </h1>
+      <p class="aparecer mt-7 max-w-md text-lg text-crema-300 sm:text-xl" style="--delay:0ms">
+        Una experiencia en vez de otra cosa que va a un cajón. Un voucher para una cata a ciegas, armado con tu mensaje.
+      </p>
+      <div class="aparecer mt-9 flex flex-col gap-3 sm:flex-row" style="--delay:60ms">
+        <a href={whatsappUrl(mensajeBase)} target="_blank" rel="noopener" data-accion="whatsapp-regalo-hero" class="btn btn-primario group">
+          <Icono nombre="whatsapp" class="size-[1.1rem]" /> Quiero regalar una cata
+        </a>
+        <a href="#como-es" class="btn btn-fantasma">Cómo funciona</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VOUCHER ============ -->
+  <section class="contenedor py-24 sm:py-32">
+    <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal>
+        <p class="rotulo">El voucher</p>
+        <h2 class="titulo-seccion mt-5">Un regalo que <em>se abre con ganas.</em></h2>
+        <p class="mt-6 max-w-md text-crema-300">
+          Lo recibís como una imagen lista para mandar por WhatsApp o imprimir, con el nombre de quien lo recibe y tu mensaje.
+          La persona después elige la fecha que mejor le quede.
+        </p>
+        <ul class="mt-8 flex flex-wrap gap-2" aria-label="Ocasiones">
+          {ocasiones.map((o) => (
+            <li class="rounded-full border border-crema-50/12 px-4 py-2 text-sm text-crema-300">{o}</li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Muestra del voucher (ilustrativa) -->
+      <div class="relative mx-auto w-full max-w-md" data-reveal style="--delay:120ms">
+        <div class="absolute -inset-6 -z-10 rounded-[3rem] opacity-60 blur-3xl" style="background: radial-gradient(60% 60% at 50% 40%, #c8925a55, transparent)" aria-hidden="true"></div>
+        <div class="superficie relative rotate-[-2deg] overflow-hidden p-7 sm:p-9">
+          <div class="flex items-center justify-between text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-crema-500">
+            <span>Voucher</span><span>N° 001</span>
+          </div>
+          <p class="mt-8 font-display text-5xl leading-[0.95] text-crema-50">Una cata <em>a ciegas</em> para vos.</p>
+          <div class="linea-perforada my-7" aria-hidden="true"></div>
+          <dl class="grid gap-3 text-sm">
+            <div class="flex justify-between gap-4"><dt class="text-crema-500">Para</dt><dd class="text-crema-50">Nombre de quien lo recibe</dd></div>
+            <div class="flex justify-between gap-4"><dt class="text-crema-500">De parte de</dt><dd class="text-crema-50">Tu nombre</dd></div>
+          </dl>
+          <p class="mt-6 font-display text-xl italic leading-snug text-caramelo-200">“Tu mensaje va acá.”</p>
+          <p class="mt-8 text-[0.65rem] uppercase tracking-[0.25em] text-crema-500">catasnotradicionales.com</p>
+        </div>
+        <p class="mt-5 text-center text-xs text-crema-500">Muestra ilustrativa. El diseño final lo armamos con vos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CÓMO ES ============ -->
+  <section id="como-es" class="contenedor py-12 sm:py-20">
+    <div data-reveal>
+      <p class="rotulo">Cómo es</p>
+      <h2 class="titulo-seccion mt-5">Tres pasos <em>y listo.</em></h2>
+    </div>
+    <ol class="mt-12 grid gap-5 md:grid-cols-3">
+      {pasos.map((p, i) => (
+        <li class="border-t border-caramelo-400/40 pt-6" data-reveal style={`--delay:${i * 90}ms`}>
+          <span class="font-display text-6xl italic leading-none text-caramelo-300">0{i + 1}</span>
+          <h3 class="mt-5 text-3xl">{p.t}</h3>
+          <p class="mt-3 text-crema-300">{p.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- ============ VALORES ============ -->
+  <section class="contenedor py-24 sm:py-32">
+    <div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+      <div data-reveal>
+        <p class="rotulo">Valores</p>
+        <h2 class="titulo-seccion mt-5">Desde <em>{formato.format(desde)}</em> por persona.</h2>
+        <p class="mt-6 max-w-sm text-crema-300">El valor depende de la cata. Podés regalar una puntual o un monto para que elija quien lo recibe.</p>
+        <Foto src="mesa-planillas-antifaces.jpg" alt="Mesa preparada con antifaces y planillas de puntaje" ratio="3/2" class="mt-10 hidden lg:block" />
+      </div>
+
+      <div data-reveal style="--delay:100ms">
+        <ul class="divide-y divide-crema-50/10 border-y border-crema-50/10">
+          {precios.map((p) => (
+            <li class="flex items-baseline justify-between gap-6 py-5">
+              <span class="font-display text-3xl text-crema-50">{p.cata}</span>
+              <span class="font-display text-2xl text-caramelo-200 tabular-nums">{formato.format(p.precio)}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-4 text-sm text-crema-500">Los valores pueden cambiar. Confirmá el precio vigente al pedir tu voucher.</p>
+        <a href={whatsappUrl(mensajeBase)} target="_blank" rel="noopener" data-accion="whatsapp-regalo-valores" class="btn btn-caramelo mt-8">
+          <Icono nombre="whatsapp" class="size-[1.1rem]" /> Pedir mi voucher
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Preguntas items={faq} id="preguntas-regalo" rotulo="Sobre el regalo" titulo="Lo que suelen <em>preguntar</em>" />
+
+  <!-- ============ CIERRE ============ -->
+  <section class="contenedor pb-24">
+    <div class="superficie grano relative overflow-hidden px-6 py-16 text-center sm:px-16 sm:py-24" data-reveal>
+      <div class="absolute inset-0 -z-10" style="background: radial-gradient(80% 90% at 50% 120%, #c8925a40, transparent 70%)" aria-hidden="true"></div>
+      <h2 class="mx-auto max-w-3xl text-5xl sm:text-7xl">Regalá <em>una sorpresa</em> de verdad.</h2>
+      <p class="mx-auto mt-6 max-w-md text-crema-300">Te respondemos enseguida por WhatsApp.</p>
+      <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href={whatsappUrl(mensajeBase)} target="_blank" rel="noopener" data-accion="whatsapp-regalo-cierre" class="btn btn-primario">
+          <Icono nombre="whatsapp" class="size-[1.1rem]" /> Quiero regalar una cata
+        </a>
+        <a href="/#fechas" class="btn btn-fantasma">Ver próximas fechas</a>
+      </div>
+    </div>
+  </section>
+</Base>

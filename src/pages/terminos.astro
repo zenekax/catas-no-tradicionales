@@ -1,0 +1,40 @@
+---
+import Legal from '../layouts/Legal.astro';
+import site from '../data/site.json';
+---
+<Legal titulo="Términos de reserva" descripcion="Condiciones de reserva, pago, cancelación y participación en las catas a ciegas de Catas No Tradicionales." actualizado="22 de octubre de 2026">
+  <p>Estos términos aplican a las reservas de catas organizadas por {site.nombre} (en adelante, “nosotros”). Al reservar tu lugar, aceptás estas condiciones.</p>
+
+  <h2>1. Reserva y pago</h2>
+  <ul>
+    <li>Tu lugar queda confirmado cuando se acredita el pago del valor publicado para esa fecha.</li>
+    <li>Los pagos se hacen por Mercado Pago o por transferencia bancaria al alias <strong>CATASNOTRADICIONALES</strong> (Personal Pay).</li>
+    <li>Los cupos son limitados y se asignan por orden de pago.</li>
+  </ul>
+
+  <h2>2. Cancelaciones y reprogramaciones</h2>
+  <ul>
+    <li>Si necesitás cancelar, te pedimos que lo hagas con la mayor anticipación posible, así vemos otras fechas y podemos reprogramarla.</li>
+    <li>Si el aviso es con menos de 24 hs., se pierde la reserva.</li>
+    <li>Si la persona no se presenta a la cata, se pierde el 100% del valor abonado.</li>
+    <li>Si por fuerza mayor tenemos que suspender una cata, te ofrecemos una nueva fecha o la devolución de lo abonado.</li>
+    <li>Podés transferir tu lugar a otra persona avisándonos antes de la cata.</li>
+  </ul>
+
+  <h2>3. Alergias y restricciones alimentarias</h2>
+  <p>Las catas incluyen productos que pueden contener gluten, lácteos, huevo, frutos secos y otros alérgenos, y se preparan en entornos donde puede haber contaminación cruzada. <strong>Avisanos al reservar</strong> cualquier alergia o restricción. Si no podemos garantizar una alternativa segura, te lo vamos a decir antes de avanzar con la reserva.</p>
+
+  <h2>4. Participación</h2>
+  <ul>
+    <li>Los niños son bienvenidos siempre que estén acompañados por un adulto responsable.</li>
+    <li>Te pedimos llegar puntual: la dinámica empieza con todo el grupo.</li>
+    <li>La dirección exacta se comparte al confirmar la reserva.</li>
+  </ul>
+
+  <h2>5. Fotos y videos</h2>
+  <p>Durante las catas podemos sacar fotos o videos para nuestras redes. Si no querés aparecer, avisanos al llegar y lo respetamos.</p>
+
+  <h2>6. Contacto</h2>
+  <p>Por cualquier consulta, escribinos por <a href={`https://wa.me/${site.whatsapp}`}>WhatsApp ({site.whatsappVisible})</a> o por Instagram <a href={`https://instagram.com/${site.instagram}`}>@{site.instagram}</a>, o por mail a <a href="mailto:catasnotradicionales@gmail.com">catasnotradicionales@gmail.com</a>.</p>
+  
+</Legal>
